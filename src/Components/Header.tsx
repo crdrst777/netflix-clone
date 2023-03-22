@@ -1,6 +1,7 @@
 import { Link, useMatch } from "react-router-dom";
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import { useState } from "react";
 
 const logoVariants = {
   normal: {
@@ -15,9 +16,11 @@ const logoVariants = {
 };
 
 const Header = () => {
+  const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("tv");
   // useMatch는 이 route 안에 있는지 다른 곳에 있는지 알려줌. -->  string | null
+  const toggleSearch = () => setSearchOpen((prev) => !prev);
 
   return (
     <Nav>
@@ -35,17 +38,39 @@ const Header = () => {
         </Logo>
         <Items>
           <Item>
-            <Link to="/">Home{homeMatch && <Circle />}</Link>
+            <Link to="/">Home{homeMatch && <Circle layoutId="circle" />}</Link>
             {/* a태그는 새로고침해버림. 같은 도메인으로 갈거면 Link를 쓰자 */}
             {/* homeMatch가 존재하면 <Circle/>를 보여줌 */}
           </Item>
           <Item>
-            <Link to="tv">Tv Shows{tvMatch && <Circle />}</Link>
+            <Link to="tv">
+              Tv Shows{tvMatch && <Circle layoutId="circle" />}
+            </Link>
           </Item>
         </Items>
       </Col>
       <Col>
-        <button>search</button>
+        <Search>
+          <motion.svg
+            onClick={toggleSearch}
+            animate={{ x: searchOpen ? -180 : 0 }}
+            transition={{ type: "linear" }}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clipRule="evenodd"
+            ></path>
+          </motion.svg>
+          <Input
+            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            transition={{ type: "linear" }}
+            placeholder="Search fot movie or tv show..."
+          />
+        </Search>
       </Col>
     </Nav>
   );
@@ -100,7 +125,17 @@ const Item = styled.li`
   }
 `;
 
-const Circle = styled.span`
+const Search = styled.span`
+  color: white;
+  display: flex;
+  align-items: center;
+  position: relative;
+  svg {
+    height: 25px;
+  }
+`;
+
+const Circle = styled(motion.span)`
   position: absolute; // Item 컴포넌트와 연관?되도록 하기위해
   width: 5px;
   height: 5px;
@@ -110,4 +145,10 @@ const Circle = styled.span`
   right: 0;
   margin: 0 auto;
   background-color: ${(props) => props.theme.red};
+`;
+
+const Input = styled(motion.input)`
+  transform-origin: right center; // 변형이 오른쪽에서부터 시작함.
+  position: absolute;
+  left: -150px;
 `;
