@@ -1,5 +1,5 @@
 import { Link, useMatch } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -20,7 +20,18 @@ const Header = () => {
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("tv");
   // useMatch는 이 route 안에 있는지 다른 곳에 있는지 알려줌. -->  string | null
-  const toggleSearch = () => setSearchOpen((prev) => !prev);
+  const inputAnimation = useAnimation();
+  const toggleSearch = () => {
+    if (searchOpen) {
+      //  trigger the close animation
+      inputAnimation.start({ scaleX: 0 });
+    } else {
+      //  trigger the open animation
+      inputAnimation.start({ scaleX: 1 });
+    }
+
+    setSearchOpen((prev) => !prev);
+  };
 
   return (
     <Nav>
@@ -66,7 +77,9 @@ const Header = () => {
             ></path>
           </motion.svg>
           <Input
-            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            animate={inputAnimation} // 코드로부터 애니메이션을 실행시키는 방법. --> 애니메이션들을 동시에 실행시키고싶을때 유용.
+            // animate={{ scaleX: searchOpen ? 1 : 0 }} // input의 속성에 animate속성을 바로 주는 방법
+            initial={{ scaleX: 0 }}
             transition={{ type: "linear" }}
             placeholder="Search fot movie or tv show..."
           />
@@ -150,5 +163,12 @@ const Circle = styled(motion.span)`
 const Input = styled(motion.input)`
   transform-origin: right center; // 변형이 오른쪽에서부터 시작함.
   position: absolute;
-  left: -150px;
+  right: 0;
+  padding: 5px 10px;
+  padding-left: 40px;
+  z-index: -1;
+  color: white;
+  font-size: 16px;
+  background-color: transparent;
+  border: 1px solid ${(props) => props.theme.white.lighter};
 `;
