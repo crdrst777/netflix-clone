@@ -1,5 +1,10 @@
 import { Link, useMatch } from "react-router-dom";
-import { motion, useAnimation } from "framer-motion";
+import {
+  motion,
+  useAnimation,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -15,12 +20,19 @@ const logoVariants = {
   },
 };
 
+const navVarients = {
+  top: { backgroundColor: "rgba(0,0,0,0)" },
+  scroll: { backgroundColor: "rgba(0,0,0,1)" },
+};
+
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("tv");
   // useMatch는 이 route 안에 있는지 다른 곳에 있는지 알려줌. -->  string | null
   const inputAnimation = useAnimation();
+  const navAnimation = useAnimation();
+  const { scrollY } = useScroll();
   const toggleSearch = () => {
     if (searchOpen) {
       //  trigger the close animation
@@ -33,8 +45,17 @@ const Header = () => {
     setSearchOpen((prev) => !prev);
   };
 
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    // console.log(latest);
+    if (latest > 80) {
+      navAnimation.start("scroll");
+    } else {
+      navAnimation.start("top");
+    }
+  });
+
   return (
-    <Nav>
+    <Nav variants={navVarients} animate={navAnimation} initial={"top"}>
       <Col>
         <Logo
           variants={logoVariants}
@@ -91,14 +112,13 @@ const Header = () => {
 
 export default Header;
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: fixed;
   width: 100%;
   top: 0;
-  background-color: black;
   font-size: 14px;
   padding: 20px 60px;
   color: white;
