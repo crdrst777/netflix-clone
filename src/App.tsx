@@ -9,7 +9,10 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* 두개의 path에서 같은 컴포넌트(<Home />)를 랜더하도록 함 */}
+        <Route path="/" element={<Home />}>
+          <Route path="movies/:movieId" element={<Home />} />
+        </Route>
         <Route path="/tv" element={<Tv />} />
         <Route path="/search" element={<Search />} />
       </Routes>
