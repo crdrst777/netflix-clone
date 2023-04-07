@@ -1,4 +1,4 @@
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import {
   motion,
   useAnimation,
@@ -7,6 +7,7 @@ import {
 } from "framer-motion";
 import styled from "styled-components";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const logoVariants = {
   normal: {
@@ -24,6 +25,10 @@ const navVarients = {
   top: { backgroundColor: "rgba(0,0,0,0)" },
   scroll: { backgroundColor: "rgba(0,0,0,1)" },
 };
+
+interface IForm {
+  keyword: string;
+}
 
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -54,6 +59,13 @@ const Header = () => {
     }
   });
 
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<IForm>();
+  const onValid = (data: IForm) => {
+    console.log(data);
+    navigate(`/search?keyword=${data.keyword}`); // query argument로 keyword를 data.keyword로 넣어준다.
+  };
+
   return (
     <Nav variants={navVarients} animate={navAnimation} initial={"top"}>
       <Col>
@@ -82,7 +94,8 @@ const Header = () => {
         </Items>
       </Col>
       <Col>
-        <Search>
+        <Search onSubmit={handleSubmit(onValid)}>
+          {/* 데이터가 유효하면 싱핼한 함수 - onValid를 넣어주는거임 */}
           <motion.svg
             onClick={toggleSearch}
             animate={{ x: searchOpen ? -180 : 0 }}
@@ -98,6 +111,7 @@ const Header = () => {
             ></path>
           </motion.svg>
           <Input
+            {...register("keyword", { required: true, minLength: 2 })}
             animate={inputAnimation} // 코드로부터 애니메이션을 실행시키는 방법. --> 애니메이션들을 동시에 실행시키고싶을때 유용.
             // animate={{ scaleX: searchOpen ? 1 : 0 }} // input의 속성에 animate속성을 바로 주는 방법
             initial={{ scaleX: 0 }}
@@ -158,7 +172,7 @@ const Item = styled.li`
   }
 `;
 
-const Search = styled.span`
+const Search = styled.form`
   color: white;
   display: flex;
   align-items: center;
