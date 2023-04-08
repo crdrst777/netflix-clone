@@ -84,7 +84,6 @@ const Home = () => {
       ) : (
         <>
           <Banner
-            // onClick={increaseIndex}
             $bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")} // $bgPhoto로 써줘야 콘솔에 오류가 안나더라..
           >
             <Title>{data?.results[0].title}</Title>
@@ -244,6 +243,7 @@ const Info = styled(motion.div)`
   background-color: ${(props) => props.theme.black.lighter};
   opacity: 0;
   position: absolute;
+  width: 100%;
   bottom: 0;
   h4 {
     text-align: center;
