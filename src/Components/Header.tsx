@@ -198,8 +198,8 @@ const Input = styled(motion.input)`
   transform-origin: right center; // 변형이 오른쪽에서부터 시작함.
   position: absolute;
   right: 0;
-  padding: 5px 10px;
-  padding-left: 40px;
+  padding: 7px 10px;
+  padding-left: 31px;
   z-index: -1;
   color: white;
   font-size: 16px;

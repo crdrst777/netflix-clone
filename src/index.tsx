@@ -33,10 +33,10 @@ a {
 }
 button{
   cursor: pointer;
-  /* border: none; */
-  /* padding: 0; 
-  margin: 0; */
-  /* background-color: transparent; */
+  border: none; 
+  padding: 0; 
+  margin: 0;
+  background-color: transparent;
 }
 li {
   list-style: none;

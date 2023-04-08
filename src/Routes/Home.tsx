@@ -5,6 +5,7 @@ import { IGetMoviesResult, getMovies } from "../api";
 import { makeImagePath } from "../utils";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
+import { ReactComponent as ArrowRight } from "../assets/icon/arrow-right.svg";
 
 const rowVariants = {
   hidden: {
@@ -83,7 +84,7 @@ const Home = () => {
       ) : (
         <>
           <Banner
-            onClick={increaseIndex}
+            // onClick={increaseIndex}
             $bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")} // $bgPhoto로 써줘야 콘솔에 오류가 안나더라..
           >
             <Title>{data?.results[0].title}</Title>
@@ -120,6 +121,15 @@ const Home = () => {
                     </Box>
                   ))}
               </Row>
+              <ArrowRightBtn onClick={increaseIndex}>
+                <ArrowRight
+                  style={{
+                    fill: "white",
+                    width: "32px",
+                    height: "32px",
+                  }}
+                />
+              </ArrowRightBtn>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
@@ -192,21 +202,23 @@ const Title = styled.h2`
 `;
 
 const Overview = styled.p`
-  font-size: 30px;
+  font-size: 20px;
   width: 50%;
 `;
 
 const Slider = styled.div`
   position: relative;
-  top: -100px;
+  top: -153px;
 `;
 
 const Row = styled(motion.div)`
   display: grid;
-  gap: 5px;
+  gap: 7px;
   grid-template-columns: repeat(6, 1fr);
   position: absolute;
   width: 100%;
+  padding: 0 60px;
+  margin: 0 0 96px 0;
 `;
 
 const Box = styled(motion.div)<{ $bgPhoto: string }>`
@@ -214,8 +226,10 @@ const Box = styled(motion.div)<{ $bgPhoto: string }>`
   background-image: url(${(props) => props.$bgPhoto});
   background-size: cover;
   background-position: center center;
-  height: 200px;
+  height: 130px;
+  /* 230 130 */
   font-size: 66px;
+  border-radius: 3px;
   cursor: pointer;
   &:first-child {
     transform-origin: center left;
@@ -230,11 +244,21 @@ const Info = styled(motion.div)`
   background-color: ${(props) => props.theme.black.lighter};
   opacity: 0;
   position: absolute;
-  width: 100%;
   bottom: 0;
   h4 {
     text-align: center;
     font-size: 18px;
+  }
+`;
+
+const ArrowRightBtn = styled.button`
+  position: absolute;
+  right: 0;
+  /* margin: 45px 13px 0 0; */
+  width: 60px;
+  height: 130px;
+  &:hover {
+    background-color: ${(props) => props.theme.black.lighter};
   }
 `;
 
