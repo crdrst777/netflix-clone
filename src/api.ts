@@ -7,6 +7,8 @@ interface IMovie {
   poster_path: string;
   title: string;
   overview: string;
+  vote_average: string;
+  release_date: string;
 }
 
 export interface IGetMoviesResult {

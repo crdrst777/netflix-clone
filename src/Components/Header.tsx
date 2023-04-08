@@ -136,7 +136,10 @@ const Nav = styled(motion.nav)`
   font-size: 14px;
   padding: 20px 60px;
   color: white;
-  background-image: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+  background-image: linear-gradient(
+    ${(props) => props.theme.black.veryDark},
+    rgba(0, 0, 0, 0)
+  );
 `;
 
 const Col = styled.div`

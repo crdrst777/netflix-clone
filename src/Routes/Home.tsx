@@ -23,8 +23,9 @@ const boxVarients = {
   normal: { scale: 1 },
   hover: {
     scale: 1.3,
-    y: -80,
+    y: -55,
     transition: { delay: 0.5, duration: 0.1, type: "tween" },
+    boxShadow: "0 0 8px 3px rgba(0, 0, 0, 0.45)",
   },
 };
 
@@ -90,6 +91,7 @@ const Home = () => {
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
           <Slider>
+            <SliderTitle>Now Playing</SliderTitle>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               {/* onExitComplete -> exit이 끝났을떼 실행되는 함수. 빠르게 연속으로 두번 클릭한 후 또 클릭할때 슬라이더가 넘어가지 않은 현상을 방지하기 위한 코드 */}
               <Row
@@ -105,17 +107,21 @@ const Home = () => {
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={movie.id + ""} // layoutId는 string이어야함
-                      key={movie.id}
                       whileHover="hover" // 자식인 <Info/>에도 상속됨
                       initial="normal"
                       variants={boxVarients}
                       onClick={() => onBoxClicked(movie.id)}
                       transition={{ type: "tween" }}
-                      $bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
+                      <Poster
+                        layoutId={movie.id + ""} // layoutId는 string이어야함
+                        key={movie.id}
+                        $bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                      />
                       <Info variants={infoVarients}>
                         <h4>{movie.title}</h4>
+                        <p>{movie.vote_average}</p>
+                        <p>{movie.release_date}</p>
                       </Info>
                     </Box>
                   ))}
@@ -172,7 +178,7 @@ const Home = () => {
 export default Home;
 
 const Wrapper = styled.div`
-  background-color: black;
+  background-color: ${(props) => props.theme.black.veryDark};
   padding-bottom: 200px;
 `;
 
@@ -190,8 +196,12 @@ const Banner = styled.div<{ $bgPhoto: string }>`
   justify-content: center;
   padding: 60px;
   // 두 배경을 갖는다. linear-gradient와 url
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+  background-image: linear-gradient(
+      rgba(0, 0, 0, 0),
+      ${(props) => props.theme.black.veryDark}
+    ),
     url(${(props) => props.$bgPhoto});
+  /* background-color: wheat; */
   background-size: cover;
 `;
 
@@ -207,7 +217,12 @@ const Overview = styled.p`
 
 const Slider = styled.div`
   position: relative;
-  top: -153px;
+  top: -196px;
+`;
+
+const SliderTitle = styled.h3`
+  padding: 0 0 11px 60px;
+  font-size: 25px;
 `;
 
 const Row = styled(motion.div)`
@@ -220,7 +235,9 @@ const Row = styled(motion.div)`
   margin: 0 0 96px 0;
 `;
 
-const Box = styled(motion.div)<{ $bgPhoto: string }>`
+const Box = styled(motion.div)``;
+
+const Poster = styled(motion.div)<{ $bgPhoto: string }>`
   background-color: white;
   background-image: url(${(props) => props.$bgPhoto});
   background-size: cover;
@@ -228,7 +245,6 @@ const Box = styled(motion.div)<{ $bgPhoto: string }>`
   height: 130px;
   /* 230 130 */
   font-size: 66px;
-  border-radius: 3px;
   cursor: pointer;
   &:first-child {
     transform-origin: center left;
@@ -239,22 +255,24 @@ const Box = styled(motion.div)<{ $bgPhoto: string }>`
 `;
 
 const Info = styled(motion.div)`
+  height: 110px;
   padding: 10px;
-  background-color: ${(props) => props.theme.black.lighter};
+  background-color: ${(props) => props.theme.black.darker};
   opacity: 0;
-  position: absolute;
   width: 100%;
   bottom: 0;
   h4 {
     text-align: center;
     font-size: 18px;
   }
+  p {
+    font-size: 12px;
+  }
 `;
 
 const ArrowRightBtn = styled.button`
   position: absolute;
   right: 0;
-  /* margin: 45px 13px 0 0; */
   width: 60px;
   height: 130px;
   &:hover {
