@@ -12,7 +12,7 @@ interface IMovie {
 }
 
 export interface IGetMoviesResult {
-  date: {
+  dates: {
     maximum: string;
     minimum: string;
   };
@@ -22,9 +22,15 @@ export interface IGetMoviesResult {
   total_results: number;
 }
 
-export function getMovies() {
+// fetcher는 데이터를 받아오고 JSON을 리턴하는 함수
+export function getMoviesNowPlaying() {
   return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
     (response) => response.json()
   );
 }
-// fetcher는 데이터를 받아오고 JSON을 리턴하는 함수
+
+export function getMoviesUpcoming() {
+  return fetch(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
