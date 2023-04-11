@@ -1,10 +1,19 @@
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { IGetMoviesResult } from "../../api";
-import { makeImagePath } from "../../utils";
-import { ReactComponent as ArrowRight } from "../../assets/icon/arrow-right.svg";
+import { PathMatch, useMatch, useNavigate } from "react-router-dom";
+import { IGetMoviesResult } from "../api";
+import { makeImagePath } from "../utils";
+import { ReactComponent as ArrowRight } from "../assets/icon/arrow-right.svg";
+import Modal from "../Components/Modal";
+
+interface ISliderProps {
+  data: IGetMoviesResult;
+  title: string;
+  listType: string;
+  menuName: string;
+  mediaType: string;
+}
 
 const rowVariants = {
   hidden: {
@@ -37,8 +46,20 @@ const infoVarients = {
 
 const offset = 6;
 
-const NowPlayingSlider = ({ data }: { data: IGetMoviesResult }) => {
+const Slider = ({
+  data,
+  title,
+  listType,
+  menuName,
+  mediaType,
+}: ISliderProps) => {
   const navigate = useNavigate(); // useNavigate 훅을 사용하면 url을 왔다갔다할 수 있음.
+  const bigMatch: PathMatch<string> | null = useMatch(
+    `/${menuName}/${listType}/:movieId`
+  );
+
+  // const { scrollY } = useScroll();
+
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false); // 빠르게 연속으로 두번 클릭하면 슬라이더가 이동하면서 중간이 비게 되는 버그가 발생하는걸 방지하기 위한 코드
   const increaseIndex = () => {
@@ -51,13 +72,14 @@ const NowPlayingSlider = ({ data }: { data: IGetMoviesResult }) => {
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  const onBoxClicked = (movieId: number) => {
-    navigate(`movies/${movieId}`); // 이 url로 바꿔줌.
+  const onBoxClicked = (menu: string, type: string, movieId: number) => {
+    // navigate(`/${menu}/${movieId}`); // 이 url로 바꿔줌.
+    navigate(`/${menu}/${type}/${movieId}`); // 이 url로 바꿔줌.
   };
 
   return (
     <Container>
-      <SliderTitle>Now Playing</SliderTitle>
+      <SliderTitle>{title}</SliderTitle>
       <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
         {/* onExitComplete -> exit이 끝났을떼 실행되는 함수. 빠르게 연속으로 두번 클릭한 후 또 클릭할때 슬라이더가 넘어가지 않은 현상을 방지하기 위한 코드 */}
         <Row
@@ -73,21 +95,19 @@ const NowPlayingSlider = ({ data }: { data: IGetMoviesResult }) => {
             .slice(offset * index, offset * index + offset)
             .map((movie) => (
               <Box
+                key={movie.id}
                 whileHover="hover" // 자식인 <Info/>에도 상속됨
                 initial="normal"
                 variants={boxVarients}
-                onClick={() => onBoxClicked(movie.id)}
+                onClick={() => onBoxClicked(menuName, listType, movie.id)}
                 transition={{ type: "tween" }}
               >
                 <Poster
-                  layoutId={movie.id + ""} // layoutId는 string이어야함
-                  key={movie.id}
+                  layoutId={movie.id + "" + listType} // layoutId는 string이어야함
                   $bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
                 />
                 <Info variants={infoVarients}>
                   <h4>{movie.title}</h4>
-                  <p>{movie.vote_average}</p>
-                  <p>{movie.release_date}</p>
                 </Info>
               </Box>
             ))}
@@ -102,11 +122,22 @@ const NowPlayingSlider = ({ data }: { data: IGetMoviesResult }) => {
           />
         </ArrowRightBtn>
       </AnimatePresence>
+
+      <AnimatePresence>
+        {bigMatch ? (
+          <Modal
+            dataId={Number(bigMatch?.params.movieId)}
+            listType={listType}
+            menuName={menuName}
+            requestUrl={mediaType}
+          />
+        ) : null}
+      </AnimatePresence>
     </Container>
   );
 };
 
-export default NowPlayingSlider;
+export default Slider;
 
 const Container = styled.div`
   position: relative;
@@ -158,9 +189,6 @@ const Info = styled(motion.div)`
   h4 {
     text-align: center;
     font-size: 18px;
-  }
-  p {
-    font-size: 12px;
   }
 `;
 

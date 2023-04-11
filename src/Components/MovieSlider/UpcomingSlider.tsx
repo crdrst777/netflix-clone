@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IGetMoviesResult, getMoviesUpcoming } from "../../api";
+import { IGetMoviesResult, getUpcomingMovies } from "../../api";
 import { makeImagePath } from "../../utils";
 import { ReactComponent as ArrowRight } from "../../assets/icon/arrow-right.svg";
 
@@ -41,8 +41,8 @@ const offset = 6;
 const UpcomingSlider = () => {
   const navigate = useNavigate(); // useNavigate 훅을 사용하면 url을 왔다갔다할 수 있음.
   const { data, isLoading } = useQuery<IGetMoviesResult>(
-    ["movies", "upcoming"],
-    getMoviesUpcoming
+    ["movies", "upcomingMovies"],
+    getUpcomingMovies
   );
   console.log("upcoming", data, isLoading);
 
