@@ -140,6 +140,7 @@ const Nav = styled(motion.nav)`
     ${(props) => props.theme.black.veryDark},
     rgba(0, 0, 0, 0)
   );
+  z-index: 98;
 `;
 
 const Col = styled.div`

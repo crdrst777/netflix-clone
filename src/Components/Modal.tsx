@@ -14,9 +14,9 @@ interface IModalProps {
 
 const Modal = ({ dataId, listType, menuName, requestUrl }: IModalProps) => {
   const navigate = useNavigate(); // useNavigate 훅을 사용하면 url을 왔다갔다할 수 있음.
-  const bigMatch = useMatch(`/${menuName}/${listType}/:movieId`);
+  const modalMatch = useMatch(`/${menuName}/${listType}/:movieId`);
   // useMatch는 이 route 안에 있는지 다른 곳에 있는지 알려줌. -->  string | null
-  console.log("bigMatch", bigMatch);
+  console.log("modalMatch", modalMatch);
   console.log("dataId", dataId);
   const onOverlayClick = () => navigate(-1);
 
@@ -29,31 +29,30 @@ const Modal = ({ dataId, listType, menuName, requestUrl }: IModalProps) => {
 
   // 클릭한 영화 찾기 (객체형태) -> 사용자가 클릭한 movieId를 이용해서, results에서 해당 영화 찾기
   // const clickedMovie = data?.results.find(
-  //   (movie) => movie.id === +bigMatch.params.movieId!
+  //   (movie) => movie.id === +modalMatch.params.movieId!
   // );
-  // // bigMatch?.params.movieId 가 true라면 (썸네일을 클릭한 상태라면), data.results 안을 탐색
+  // // modalMatch?.params.movieId 가 true라면 (썸네일을 클릭한 상태라면), data.results 안을 탐색
   // // find 함수는 ()안에 넣는 조건을 만족하는 가장 첫번째 항목을 반환한다.
-  // // movie.id가 bigMatch.params.movieId와 같은 movie를 찾는다.
-  // // bigMatch.params.movieId 가 string이라서 동일하게 number로 변환해줌(앞에 +써주면됨)
+  // // movie.id가 modalMatch.params.movieId와 같은 movie를 찾는다.
+  // // modalMatch.params.movieId 가 string이라서 동일하게 number로 변환해줌(앞에 +써주면됨)
   // // data?.results --> 영화들로 이루어진 배열임.
   // console.log("clickedMovie", clickedMovie);
 
   return (
-    <>
+    <Wrapper>
       <Overlay
         onClick={onOverlayClick}
         exit={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       />
-      <BigMovie
-        layoutId={bigMatch?.params.movieId + "" + listType}
+      <ModalMovie
+        layoutId={modalMatch?.params.movieId + "" + listType}
         // style={{ top: scrollY.get() + 100 }}
         // motion value에 숫자를 더하려면 .get()를 해줘야함. (100px의 마진을 줬음)
       >
-        {/* clickedMovie가 있으면 <>...</> */}
         {data && (
           <>
-            <BigCover
+            <ModalCover
               style={{
                 backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
                   data.backdrop_path,
@@ -61,16 +60,18 @@ const Modal = ({ dataId, listType, menuName, requestUrl }: IModalProps) => {
                 )})`,
               }}
             />
-            <BigTitle>{data.title}</BigTitle>
-            <BigOverview>{data.overview}</BigOverview>
+            <ModalTitle>{data.title}</ModalTitle>
+            <ModalOverview>{data.overview}</ModalOverview>
           </>
         )}
-      </BigMovie>
-    </>
+      </ModalMovie>
+    </Wrapper>
   );
 };
 
 export default Modal;
+
+const Wrapper = styled.div``;
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -81,7 +82,7 @@ const Overlay = styled(motion.div)`
   opacity: 0;
 `;
 
-const BigMovie = styled(motion.div)`
+const ModalMovie = styled(motion.div)`
   position: absolute;
   width: 40vw;
   height: 80vh;
@@ -93,14 +94,14 @@ const BigMovie = styled(motion.div)`
   background-color: ${(props) => props.theme.black.lighter};
 `;
 
-const BigCover = styled.div`
+const ModalCover = styled.div`
   width: 100%;
   background-size: cover;
   background-position: center center;
   height: 400px;
 `;
 
-const BigTitle = styled.h3`
+const ModalTitle = styled.h3`
   color: ${(props) => props.theme.white.lighter};
   padding: 20px;
   font-size: 46px;
@@ -108,7 +109,7 @@ const BigTitle = styled.h3`
   top: -80px;
 `;
 
-const BigOverview = styled.p`
+const ModalOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
   padding: 20px;
   position: relative;

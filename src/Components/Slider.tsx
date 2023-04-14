@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { PathMatch, useMatch, useNavigate } from "react-router-dom";
 import { IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
@@ -31,7 +31,7 @@ const boxVarients = {
   normal: { scale: 1 },
   hover: {
     scale: 1.3,
-    y: -55,
+    y: -28,
     transition: { delay: 0.5, duration: 0.1, type: "tween" },
     boxShadow: "0 0 8px 3px rgba(0, 0, 0, 0.45)",
   },
@@ -77,8 +77,10 @@ const Slider = ({
     navigate(`/${menu}/${type}/${movieId}`); // 이 url로 바꿔줌.
   };
 
+  // const dragWrapperRef = useRef<HTMLDivElement>(null); // 드래그 영역 부모 잡기위해 useRef사용
+
   return (
-    <Container>
+    <Wrapper>
       <SliderTitle>{title}</SliderTitle>
       <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
         {/* onExitComplete -> exit이 끝났을떼 실행되는 함수. 빠르게 연속으로 두번 클릭한 후 또 클릭할때 슬라이더가 넘어가지 않은 현상을 방지하기 위한 코드 */}
@@ -133,21 +135,23 @@ const Slider = ({
           />
         ) : null}
       </AnimatePresence>
-    </Container>
+    </Wrapper>
   );
 };
 
 export default Slider;
 
-const Container = styled.div`
+const Wrapper = styled.div`
   position: relative;
   top: -196px;
-  margin-bottom: 170px;
+  margin-bottom: 200px;
+  /* overflow: hidden; */
 `;
 
 const SliderTitle = styled.h3`
   padding: 0 0 11px 60px;
-  font-size: 25px;
+  font-size: 24px;
+  font-weight: 500;
 `;
 
 const Row = styled(motion.div)`
@@ -167,7 +171,7 @@ const Poster = styled(motion.div)<{ $bgPhoto: string }>`
   background-image: url(${(props) => props.$bgPhoto});
   background-size: cover;
   background-position: center center;
-  height: 130px;
+  height: 150px;
   /* 230 130 */
   font-size: 66px;
   cursor: pointer;
@@ -180,7 +184,10 @@ const Poster = styled(motion.div)<{ $bgPhoto: string }>`
 `;
 
 const Info = styled(motion.div)`
-  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
   padding: 10px;
   background-color: ${(props) => props.theme.black.darker};
   opacity: 0;
@@ -188,7 +195,7 @@ const Info = styled(motion.div)`
   bottom: 0;
   h4 {
     text-align: center;
-    font-size: 18px;
+    font-size: 16px;
   }
 `;
 
