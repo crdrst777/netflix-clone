@@ -1,29 +1,33 @@
 const API_KEY = "b18e798ff377ef49f1c335283e7c43d6";
 const BASE_PATH = "https://api.themoviedb.org/3";
+
 export const LIST_TYPE = [
-  "nowPlaying",
+  "nowPlayingMovies",
   "upcomingMovies",
   "popularMovies",
-  "tvShow",
+  "nowPlayingTv",
+  "popularTv",
 ];
 
-interface IMovie {
+// movie
+interface IData {
   id: number;
   backdrop_path: string;
   poster_path: string;
-  title: string;
+  title?: string;
+  name?: string;
   overview: string;
   vote_average: string;
-  release_date: string;
+  release_date?: string;
 }
 
-export interface IGetMoviesResult {
-  dates: {
+export interface IGetDataResult {
+  dates?: {
     maximum: string;
     minimum: string;
   };
   page: number;
-  results: IMovie[];
+  results: IData[];
   total_pages: number;
   total_results: number;
 }
@@ -85,10 +89,16 @@ export function getDetailData(requestUrl: string, movieId: number) {
   );
 }
 
-// export async function getMovies() {
-//   const movies = {} as IGetMovies;
-//   const playingMovie = await axios.get(
-//     `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`
-//   );
-//   movies.playing_movie = playingMovie.data;
-// }
+// Tv - NowPlaying
+export function getNowPlayingTv() {
+  return fetch(`${BASE_PATH}/tv/on_the_air?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+
+// Tv - Popular
+export function getPopularTv() {
+  return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}`).then((response) =>
+    response.json()
+  );
+}

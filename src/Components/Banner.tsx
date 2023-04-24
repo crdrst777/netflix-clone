@@ -1,13 +1,17 @@
 import styled from "styled-components";
 import { makeImagePath } from "../utils";
-import { IGetMoviesResult } from "../api";
+import { IGetDataResult } from "../api";
 
-const Banner = ({ data }: { data: IGetMoviesResult }) => {
+const Banner = ({ data }: { data: IGetDataResult }) => {
   return (
     <Wrapper
       $bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")} // $bgPhoto로 써줘야 콘솔에 오류가 안나더라..
     >
-      <Title>{data?.results[0].title}</Title>
+      <Title>
+        {data?.results[0].title
+          ? data?.results[0].title
+          : data?.results[0].name}
+      </Title>
       <Overview>{data?.results[0].overview}</Overview>
     </Wrapper>
   );
@@ -39,4 +43,5 @@ const Title = styled.h2`
 const Overview = styled.p`
   font-size: 20px;
   width: 50%;
+  margin-bottom: 120px;
 `;

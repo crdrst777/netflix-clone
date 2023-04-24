@@ -14,7 +14,7 @@ interface IModalProps {
 
 const Modal = ({ dataId, listType, menuName, requestUrl }: IModalProps) => {
   const navigate = useNavigate(); // useNavigate 훅을 사용하면 url을 왔다갔다할 수 있음.
-  const modalMatch = useMatch(`/${menuName}/${listType}/:movieId`);
+  const modalMatch = useMatch(`/${menuName}/${listType}/:id`);
   // useMatch는 이 route 안에 있는지 다른 곳에 있는지 알려줌. -->  string | null
   console.log("modalMatch", modalMatch);
   console.log("dataId", dataId);
@@ -46,7 +46,7 @@ const Modal = ({ dataId, listType, menuName, requestUrl }: IModalProps) => {
         animate={{ opacity: 1 }}
       />
       <ModalMovie
-        layoutId={modalMatch?.params.movieId + "" + listType}
+        layoutId={modalMatch?.params.id + "" + listType}
         // style={{ top: scrollY.get() + 100 }}
         // motion value에 숫자를 더하려면 .get()를 해줘야함. (100px의 마진을 줬음)
       >
@@ -60,7 +60,7 @@ const Modal = ({ dataId, listType, menuName, requestUrl }: IModalProps) => {
                 )})`,
               }}
             />
-            <ModalTitle>{data.title}</ModalTitle>
+            <ModalTitle>{data.title ? data.title : data.name}</ModalTitle>
             <ModalOverview>{data.overview}</ModalOverview>
           </>
         )}
@@ -80,18 +80,21 @@ const Overlay = styled(motion.div)`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
+  z-index: 99;
 `;
 
 const ModalMovie = styled(motion.div)`
-  position: absolute;
+  position: fixed;
   width: 40vw;
   height: 80vh;
+  top: 90px;
   left: 0;
   right: 0;
   margin: 0 auto;
   border-radius: 15px;
   overflow: hidden;
   background-color: ${(props) => props.theme.black.lighter};
+  z-index: 100;
 `;
 
 const ModalCover = styled.div`

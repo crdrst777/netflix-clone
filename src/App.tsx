@@ -11,10 +11,11 @@ function App() {
       <Routes>
         {/* 두개의 path에서 같은 컴포넌트(<Home />)를 랜더하도록 함 */}
         <Route path="/" element={<Home />}>
-          <Route path="movies/:movieId" element={<Home />} />
+          {/* <Route path="movies/:movieId" element={<Home />} /> */}
         </Route>
         <Route path="/home/:listType/:id" element={<Home />}></Route>
         <Route path="/tv" element={<Tv />} />
+        <Route path="/tv/:listType/:id" element={<Tv />}></Route>
         <Route path="/search" element={<Search />} />
       </Routes>
     </BrowserRouter>
